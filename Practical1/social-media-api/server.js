@@ -1,52 +1,49 @@
 const express = require('express');
-const dotev = require ('dotenv')
+const dotenv = require('dotenv');
 const morgan = require('morgan');
 const cors = require('cors');
 const helmet = require('helmet');
-const path = require ('path');
+const path = require('path');
 
-//load env vars
+// Load env vars
 dotenv.config();
 
 const app = express();
 
-//MIdlleware 
+// Middleware
 app.use(express.json());
 app.use(morgan('dev'));
 app.use(cors());
 app.use(helmet());
-app.use (require('./middleware/formatResponse'));
+app.use(require('./middleware/formatResponse'));
 
-//Routes (to be defined later)
+// Routes
 app.use(express.static('public'));
-app.get('/api-docs', (req, res) =>{
-    res.sendFile(path.join(__dirname, 'public', 'docs.html'));
+app.get('/api-docs', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'docs.html'));
 });
 app.use('/users', require('./routes/users'));
 app.use('/posts', require('./routes/posts'));
 app.use('/comments', require('./routes/comments'));
 app.use('/likes', require('./routes/likes'));
-app.use('/follows', require('./routes/follows'));
+app.use('/follows', require('./routes/followers'));
 
-//basic route
+// Basic route
 app.get('/', (req, res) => {
-    res.json({message: 'Welcome to the Social Media API'});
+  res.json({ message: 'Welcome to the Social Media API' });
 });
 
-//ERROR handler middleware (to be defined later)
+// Error handler middleware
 app.use(require('./middleware/errorHandler'));
 
 const PORT = process.env.PORT || 3000;
 
-app.listen(PORT,'0.0.0.0', () => {
-    console.log(`Server is running in development mode on port ${PORT}`);
+app.listen(PORT, '0.0.0.0', () => {
+  console.log(`Server is running in development mode on port ${PORT}`);
 });
 
-//Handle unhandeled promis rejections
+// Handle unhandled promise rejections
 process.on('unhandledRejection', (err, promise) => {
-    console.log(`Error: ${err.message}`);
-    //Close server & exit process
-    process.exit(1);
+  console.log(`Error: ${err.message}`);
+  process.exit(1);
 });
-
-app.use (require('./middleware/formatResponse'));    

@@ -1,4 +1,3 @@
-javascript
 const ErrorResponse = require('../utils/errorResponse');
 const asyncHandler = require('../middleware/async');
 const { posts, users } = require('../utils/mockData');
